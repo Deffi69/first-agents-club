@@ -75,15 +75,31 @@ npx hardhat test
 Even at 20× that gas price the deployment stays under ~Rp9,100. Re-run any
 time with `node scripts/estimate.js` (read-only; it never sends anything).
 
+## Live hosting (GitHub Pages — done 19 Nov 2026)
+
+The claim page and metadata are hosted on GitHub Pages from the public repo
+**https://github.com/Deffi69/first-agents-club** (built from
+`site-staging/` in this folder):
+
+| Item | URL |
+|---|---|
+| Claim page (site root) | https://deffi69.github.io/first-agents-club/ |
+| Metadata base URI → pass as `baseURI_` at deploy | `https://deffi69.github.io/first-agents-club/metadata/` |
+| Badge image | https://deffi69.github.io/first-agents-club/metadata/badge.png |
+| Token metadata | `metadata/1.json` … `metadata/300.json` (pre-generated for token IDs 1–300) |
+
+All URLs verified live (HTTP 200) on 19 Nov 2026. The claim page still
+carries the `0x0000…` contract-address placeholder — it gets filled in only
+after the contract is deployed. The contract itself is **not** deployed yet.
+
 ## Deploy + verify (only when the owner says go)
 
 > ⚠️ Nothing in this repo has been deployed. Deployment is a separate,
 > explicitly approved step.
 
-1. **Host the metadata.** Upload `metadata/` (one JSON per token id, named
-   `1.json`, `2.json`, … — or a single shared file per id) plus the badge
-   image to a host you control (IPFS or any HTTPS host). The folder URL
-   becomes the constructor `baseURI_` (must end with `/`).
+1. **Host the metadata.** ✅ Done — see "Live hosting" above. The metadata
+   folder URL (`https://deffi69.github.io/first-agents-club/metadata/`)
+   becomes the constructor `baseURI_` (the contract appends `<id>.json`).
 2. **Deploy** from the owner's wallet (e.g. Remix or Hardhat) with:
    - `agentIDContract_` = `0x60b9262456de011f7d15a54cdd8c48baaa8b022f`
    - `baseURI_` = the metadata folder URL from step 1
