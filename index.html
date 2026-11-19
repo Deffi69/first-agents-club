@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>First Agents Club — Free Pioneer Badge claim for Agent ID holders</title>
+<style>
+  body { font-family: system-ui, sans-serif; background:#0b0e11; color:#eaecef;
+         margin:0; display:flex; justify-content:center; padding:24px 12px; }
+  .card { max-width:520px; width:100%; background:#181a20; border:1px solid #2b3139;
+          border-radius:16px; padding:24px; }
+  h1 { font-size:22px; margin:0 0 8px; }
+  .sub { color:#b7bdc6; font-size:14px; line-height:1.5; margin:0 0 16px; }
+  .row { display:flex; justify-content:space-between; padding:10px 0;
+         border-top:1px solid #2b3139; font-size:14px; }
+  .row b { font-weight:600; }
+  button { width:100%; margin-top:18px; padding:13px; font-size:16px; font-weight:600;
+           border:0; border-radius:10px; background:#f0b90b; color:#181a20; cursor:pointer; }
+  button:disabled { background:#474d57; color:#848e9c; cursor:not-allowed; }
+  #status { margin-top:14px; font-size:13px; color:#b7bdc6; min-height:18px; word-break:break-all; }
+  .fine { margin-top:16px; font-size:12px; color:#848e9c; line-height:1.5; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🏅 First Agents Club</h1>
+  <p class="sub">
+    The club's Pioneer Badge: a free keepsake badge for the early community of Binance Agent ID holders on BNB Chain.
+    If your wallet holds an Agent ID, you can claim one badge — one per wallet, free forever.
+    The badge is a collectible proof that you were here early; it carries no price, no yield,
+    and no promise of any return.
+  </p>
+
+  <div class="row"><span>Your wallet</span><b id="wallet">Not connected</b></div>
+  <div class="row"><span>Holds an Agent ID</span><b id="holds">—</b></div>
+  <div class="row"><span>Badge already claimed</span><b id="claimed">—</b></div>
+  <div class="row"><span>Total badges claimed</span><b id="total">—</b></div>
+
+  <button id="connectBtn">Connect wallet</button>
+  <button id="claimBtn" disabled>Claim my badge</button>
+  <div id="status"></div>
+
+  <p class="fine">
+    Connect with the wallet button in your own wallet app or browser extension — this page
+    never asks for a seed phrase, private key, pairing code, or QR login, and it never will.
+    Claiming is a normal on-chain transaction that you review and confirm in your own wallet;
+    you only pay the small BNB Chain network fee.
+  </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+<script>
+// ============================================================================
+// TODO — FILL IN AFTER DEPLOYMENT:
+// BADGE_CONTRACT_ADDRESS is a placeholder until the badge contract is deployed
+// on BNB Chain mainnet and verified on BscScan.
+// ============================================================================
+const BADGE_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // <-- replace after deployment
+const AGENT_ID_CONTRACT = "0x60b9262456de011f7d15a54cdd8c48baaa8b022f"; // SPACE ID Agent ID (BSC)
+const BSC_CHAIN_ID = 56n;
+
+const ERC721_READ_ABI = ["function balanceOf(address) view returns (uint256)"];
+const BADGE_ABI = [
+  "function claim()",
+  "function hasClaimed(address) view returns (bool)",
+  "function totalClaimed() view returns (uint256)"
+];
+
+const $ = (id) => document.getElementById(id);
+const status = (msg) => { $("status").textContent = msg; };
+
+let provider, signer, account;
+
+async function refresh() {
+  if (!provider || !account) return;
+  const agentId = new ethers.Contract(AGENT_ID_CONTRACT, ERC721_READ_ABI, provider);
+  const badge = new ethers.Contract(BADGE_CONTRACT_ADDRESS, BADGE_ABI, provider);
+
+  const holds = (await agentId.balanceOf(account)) > 0n;
+  $("holds").textContent = holds ? "Yes ✅" : "No";
+  $("claimed").textContent = "—";
+  $("total").textContent = "—";
+  $("claimBtn").disabled = true;
+
+  if (BADGE_CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000") {
+    const claimed = await badge.hasClaimed(account);
+    $("claimed").textContent = claimed ? "Yes ✅" : "No";
+    $("total").textContent = (await badge.totalClaimed()).toString();
+    $("claimBtn").disabled = !holds || claimed;
+  } else {
+    status("Badge contract not deployed yet — address placeholder.");
+  }
+}
+
+$("connectBtn").onclick = async () => {
+  try {
+    if (!window.ethereum) { status("No wallet found. Open this page in your wallet's browser or with a wallet extension."); return; }
+    provider = new ethers.BrowserProvider(window.ethereum);
+    const network = await provider.getNetwork();
+    if (network.chainId !== BSC_CHAIN_ID) {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x38" }] // 56 = BNB Chain
+      });
+      provider = new ethers.BrowserProvider(window.ethereum);
+    }
+    signer = await provider.getSigner(); // user confirms the connection in their wallet
+    account = await signer.getAddress();
+    $("wallet").textContent = account.slice(0, 6) + "…" + account.slice(-4);
+    $("connectBtn").textContent = "Connected";
+    $("connectBtn").disabled = true;
+    await refresh();
+  } catch (e) {
+    status("Connection failed: " + (e.shortMessage || e.message));
+  }
+};
+
+$("claimBtn").onclick = async () => {
+  try {
+    const badge = new ethers.Contract(BADGE_CONTRACT_ADDRESS, BADGE_ABI, signer);
+    status("Confirm the claim transaction in your wallet…");
+    const tx = await badge.claim(); // user reviews and confirms in their own wallet
+    status("Transaction sent: " + tx.hash + " — waiting for confirmation…");
+    await tx.wait();
+    status("Badge claimed! 🎉 Tx: " + tx.hash);
+    await refresh();
+  } catch (e) {
+    status("Claim failed: " + (e.shortMessage || e.message));
+  }
+};
+</script>
+</body>
+</html>
