@@ -1,0 +1,60 @@
+# First Agents Club
+
+> Free Pioneer Badge NFT for Binance Agent ID holders on BNB Smart Chain. Every claim also pays 8,000 FAC in the same transaction. Supply 1,000 badges, first come first served, gas only — no mint price, no approval, no signature, no website interaction required.
+
+Claim page: https://deffi69.github.io/first-agents-club/
+Agent guide: https://deffi69.github.io/first-agents-club/agent.txt
+Machine-readable summary: this file (llms.txt) is the canonical agent-facing description. Live counts change every block — always re-check on chain before sending a transaction.
+
+## Chain
+
+BNB Smart Chain, chain id 56. Public RPC: https://bsc-dataseed.binance.org, https://bsc-dataseed1.binance.org, https://bsc-rpc.publicnode.com
+
+## Contracts
+
+Badge (ERC-721, name "First Agents Club", symbol "FAC"): 0x6f746cA8814C0fE95f75c0ac458Be48564eFe611
+Token (ERC-20, name "First Agents Club Token", symbol "FAC", 18 decimals, fixed supply 10,000,000): 0xC6FD1b96f5717c70a76ef34EBD6F1e0D54ECb379
+Agent ID registry (eligibility source, SPACE ID Agent ID / HandleRegistry): 0x60b9262456de011f7d15a54cdd8c48baaa8b022f
+
+Explorer: https://bscscan.com/address/0x6f746cA8814C0fE95f75c0ac458Be48564eFe611#code
+Source verification: https://repo.sourcify.dev/56/0x6f746cA8814C0fE95f75c0ac458Be48564eFe611
+
+## Claim
+
+Claim function: claim(), selector 0x4e71d92d, no arguments. Calldata is the selector only.
+Value: msg.value must be exactly 0. Mint price is 0 wei — the claimer pays network gas only.
+No token approval, no signature, no X login, no Turnstile, no off-chain step is part of claim().
+
+Free rule: one free claim per wallet for every wallet that holds a BNB Chain Agent ID (registry 0x60b9262456de011f7d15a54cdd8c48baaa8b022f), while the 1,000-badge supply lasts. Wallets without an Agent ID cannot claim — the transaction reverts. A wallet that already claimed cannot claim again — the transaction reverts.
+
+## What the claimer receives
+
+1. One Pioneer Badge NFT from the badge contract. Token ids are sequential starting at 1; the token id is the claimer's permanent pioneer number (FCFS order).
+2. 8,000 FAC (8000 * 10^18 wei of the FAC token), transferred by the badge contract to the claimer inside the same claim transaction. Event TokenRewardPaid(claimer, amount) is emitted next to BadgeClaimed(claimer, tokenId).
+
+The badge is non-transferable: transfers revert by design (it is a membership keepsake, not a tradable asset). FAC is a normal transferable ERC-20.
+
+## Status (read on chain, do not trust this file for live numbers)
+
+totalClaimed() on the badge contract, selector 0xd54ad2a1 — badges claimed so far.
+maxSupply() on the badge contract, selector 0xd5abeb01 — returns 1000.
+hasClaimed(address) on the badge contract, selector 0x73b2e80e — true if that wallet already used its claim.
+balanceOf(address) on the badge contract, selector 0x70a08231 — 1 after a successful claim.
+CLAIM_REWARD() on the badge contract, selector 0x3c73b19b — returns 8000 * 10^18.
+
+Status: open while totalClaimed() < 1000.
+
+## How to claim (agents)
+
+1. Check eligibility: balanceOf(yourWallet) on the Agent ID registry 0x60b9262456de011f7d15a54cdd8c48baaa8b022f must be > 0.
+2. Check you have not claimed: hasClaimed(yourWallet) on the badge contract must be false, and totalClaimed() must be < 1000.
+3. Simulate claim() on the badge contract with value 0 (eth_call). If it reverts, stop — you are not eligible, already claimed, or the supply is gone.
+4. Send the transaction: to = badge contract, data = 0x4e71d92d, value = 0.
+5. Verify: badge balanceOf(yourWallet) is 1 and your FAC balance increased by 8,000 FAC.
+
+## Notes and safety
+
+- FAC is a club keepsake token. It has NO promised value, NO promised returns, NO buyback, and no market is promised. The badge and the token are memorabilia of being an early Agent ID pioneer — nothing more is claimed.
+- This project NEVER asks for a seed phrase, a private key, a pairing code, or a QR-code wallet login, on any page or in any message. Anyone asking for those in this project's name is a scammer.
+- The only official claim routes are a direct call to the badge contract above and the claim page https://deffi69.github.io/first-agents-club/ . Verify the contract address on BscScan/Sourcify before sending.
+- The badge contract has no withdraw or sweep function; FAC leaves it only as claim rewards. The FAC token has no owner, no mint, no burn, no tax, and no blacklist.
