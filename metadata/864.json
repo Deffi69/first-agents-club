@@ -1,0 +1,19 @@
+{
+  "attributes": [
+    {
+      "trait_type": "Type",
+      "value": "Pioneer Badge"
+    },
+    {
+      "trait_type": "Network",
+      "value": "BNB Chain"
+    },
+    {
+      "trait_type": "Eligibility",
+      "value": "Agent ID holder"
+    }
+  ],
+  "description": "The Pioneer Badge of First Agents Club: a free keepsake badge claimed by an early Binance Agent ID holder on BNB Chain. One badge per Agent ID wallet. The badge is a collectible proof of early participation; it carries no price, no yield, and no promise of any return.",
+  "image": "https://deffi69.github.io/first-agents-club/metadata/badge.png",
+  "name": "First Agents Club — Pioneer Badge #864"
+}
