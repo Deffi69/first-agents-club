@@ -42,6 +42,27 @@ Design choices, on purpose:
 | Claim page | `page/index.html` — standard `window.ethereum` connect, reads Agent ID balance + claim status, sends `claim()` for the user to confirm in their own wallet |
 | Red lines respected | No QR-code Agentic Wallet login, no bypassing user confirmation, no collecting seed phrases / private keys / pairing codes, no promises of returns |
 
+## Smart contracts (full source in this repo)
+
+Both production contracts live in [`contracts/`](contracts/) — exactly the
+sources that were compiled and tested locally (Solidity 0.8.20, optimizer ON,
+200 runs). Remix can import them straight from these URLs:
+
+| Contract | What it is | Source |
+|---|---|---|
+| `FAC` | First Agents Club Token — fixed-supply ERC-20 (10,000,000 FAC, minted once to the deployer; no mint/burn/tax/owner) | [contracts/FAC.sol](https://github.com/Deffi69/first-agents-club/blob/main/contracts/FAC.sol) |
+| `AgentIDPioneerBadge` | The Pioneer Badge (ERC-721) — free claim gated by Agent ID, max 1,000 badges, pays 8,000 FAC per claim from its own funded balance | [contracts/AgentIDPioneerBadge.sol](https://github.com/Deffi69/first-agents-club/blob/main/contracts/AgentIDPioneerBadge.sol) |
+
+Raw files (for import tools):
+`https://raw.githubusercontent.com/Deffi69/first-agents-club/main/contracts/FAC.sol`
+and
+`https://raw.githubusercontent.com/Deffi69/first-agents-club/main/contracts/AgentIDPioneerBadge.sol`.
+
+Deployment order matters: deploy `FAC` first (no constructor arguments), then
+deploy `AgentIDPioneerBadge` with
+`(agentIDContract_ = 0x60b9262456de011f7d15a54cdd8c48baaa8b022f, baseURI_ = https://deffi69.github.io/first-agents-club/metadata/, facToken_ = <the FAC address>, maxSupply_ = 1000)`,
+then fund the badge by transferring exactly 8,000,000 FAC to its address.
+
 ## Repository layout
 
 ```
