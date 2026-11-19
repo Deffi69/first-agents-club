@@ -3,49 +3,447 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>First Agents Club — Free Pioneer Badge claim for Agent ID holders</title>
+<meta name="description" content="First Agents Club — the free Pioneer Badge for Binance Agent ID holders on BNB Chain. One badge per wallet, numbered 1 to 1,000, with 8,000 FAC in every claim.">
+<meta name="theme-color" content="#080604">
+<title>First Agents Club — Free Pioneer Badge for Agent ID Holders</title>
+<link rel="icon" href="metadata/badge.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  body { font-family: system-ui, sans-serif; background:#0b0e11; color:#eaecef;
-         margin:0; display:flex; justify-content:center; padding:24px 12px; }
-  .card { max-width:520px; width:100%; background:#181a20; border:1px solid #2b3139;
-          border-radius:16px; padding:24px; }
-  h1 { font-size:22px; margin:0 0 8px; }
-  .sub { color:#b7bdc6; font-size:14px; line-height:1.5; margin:0 0 16px; }
-  .row { display:flex; justify-content:space-between; padding:10px 0;
-         border-top:1px solid #2b3139; font-size:14px; }
-  .row b { font-weight:600; }
-  button { width:100%; margin-top:18px; padding:13px; font-size:16px; font-weight:600;
-           border:0; border-radius:10px; background:#f0b90b; color:#181a20; cursor:pointer; }
-  button:disabled { background:#474d57; color:#848e9c; cursor:not-allowed; }
-  #status { margin-top:14px; font-size:13px; color:#b7bdc6; min-height:18px; word-break:break-all; }
-  .fine { margin-top:16px; font-size:12px; color:#848e9c; line-height:1.5; }
+  :root {
+    --bg: #080604;
+    --panel: #14100a;
+    --panel-2: #1a150c;
+    --gold: #d4af37;
+    --gold-light: #f6e27a;
+    --gold-deep: #9a7b24;
+    --ink: #f4ecd8;
+    --muted: #b3a888;
+    --faint: #7d7460;
+    --line: rgba(212, 175, 55, .22);
+    --line-soft: rgba(212, 175, 55, .12);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(1000px 520px at 50% -8%, rgba(212, 175, 55, .15), rgba(212, 175, 55, 0) 60%),
+      radial-gradient(760px 420px at 88% 16%, rgba(43, 98, 190, .10), rgba(43, 98, 190, 0) 60%),
+      radial-gradient(700px 500px at 8% 60%, rgba(212, 175, 55, .05), rgba(212, 175, 55, 0) 60%),
+      var(--bg);
+    min-height: 100vh;
+  }
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image: radial-gradient(rgba(212, 175, 55, .055) 1px, rgba(212, 175, 55, 0) 1.4px);
+    background-size: 26px 26px;
+    pointer-events: none;
+  }
+  ::selection { background: rgba(212, 175, 55, .35); }
+  a { color: var(--gold-light); }
+
+  .wrap { position: relative; max-width: 1120px; margin: 0 auto; padding: 0 20px 72px; }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    position: relative;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0 16px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-mark {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(145deg, #2a2110, #171208);
+    border: 1px solid var(--gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, .12), 0 0 18px rgba(212, 175, 55, .25);
+    font-family: "Cinzel", Georgia, serif; font-weight: 900; font-size: 15px; color: var(--gold-light);
+  }
+  .brand-name {
+    font-family: "Cinzel", Georgia, serif; font-weight: 700;
+    letter-spacing: .28em; font-size: 13px; color: var(--ink);
+  }
+  .brand-name span { color: var(--gold); }
+  .topbar .pill {
+    font-size: 11px; font-weight: 600; letter-spacing: .18em;
+    color: var(--gold-light);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 7px 12px; background: rgba(212, 175, 55, .06);
+    white-space: nowrap;
+  }
+
+  /* ---------- hero ---------- */
+  .hero { text-align: center; padding: 52px 0 8px; animation: rise .8s ease both; }
+  .badge-wrap { display: flex; justify-content: center; margin-bottom: 30px; }
+  .badge-ring {
+    width: min(74vw, 300px); aspect-ratio: 1 / 1; border-radius: 50%;
+    padding: 9px;
+    background: linear-gradient(150deg, var(--gold-light), var(--gold) 40%, var(--gold-deep) 70%, var(--gold-light));
+    box-shadow: 0 0 90px rgba(212, 175, 55, .35), 0 24px 60px rgba(0, 0, 0, .6);
+    animation: glow 5s ease-in-out infinite;
+  }
+  .badge-ring img {
+    width: 100%; height: 100%; display: block;
+    border-radius: 50%; object-fit: cover;
+    border: 3px solid #0a0805;
+  }
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 70px rgba(212, 175, 55, .28), 0 24px 60px rgba(0, 0, 0, .6); }
+    50% { box-shadow: 0 0 110px rgba(212, 175, 55, .45), 0 24px 60px rgba(0, 0, 0, .6); }
+  }
+  .eyebrow {
+    margin: 0 0 14px; font-size: 11.5px; font-weight: 600;
+    letter-spacing: .38em; color: var(--gold);
+    text-transform: uppercase;
+  }
+  h1 {
+    margin: 0 0 16px;
+    font-family: "Cinzel", "Playfair Display", Georgia, serif;
+    font-weight: 900; line-height: 1.04;
+    font-size: clamp(2.5rem, 9vw, 4.3rem);
+    background: linear-gradient(160deg, #fdf3c4 0%, var(--gold-light) 30%, var(--gold) 58%, var(--gold-deep) 82%, var(--gold-light) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+  .tagline {
+    margin: 0 auto; max-width: 580px;
+    font-size: 1.06rem; line-height: 1.65; color: var(--muted);
+  }
+  .tagline b { color: var(--ink); font-weight: 600; }
+
+  .counter { margin: 36px auto 0; max-width: 520px; animation: rise .8s .1s ease both; }
+  .count-main {
+    font-family: "Cinzel", Georgia, serif; font-weight: 700;
+    font-size: clamp(2.6rem, 8vw, 3.4rem); line-height: 1; color: var(--gold-light);
+  }
+  .count-of { font-size: .45em; color: var(--muted); font-weight: 600; margin-left: 8px; letter-spacing: .06em; }
+  .count-label {
+    margin-top: 8px; font-size: 11.5px; font-weight: 600;
+    letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
+  }
+  .bar {
+    margin: 18px auto 12px; height: 8px; border-radius: 999px;
+    background: #2a2110; border: 1px solid var(--line-soft); overflow: hidden;
+  }
+  .bar > div {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--gold-deep), var(--gold), var(--gold-light));
+    border-radius: 999px;
+    transition: width 1s ease;
+  }
+  .count-sub { font-size: 13.5px; color: var(--faint); }
+  .count-sub b { color: var(--gold-light); font-weight: 600; }
+
+  /* ---------- sections ---------- */
+  section { margin-top: 64px; animation: rise .8s ease both; }
+  .sec-head { display: flex; align-items: center; gap: 16px; margin-bottom: 26px; }
+  .sec-head::before, .sec-head::after {
+    content: ""; flex: 1; height: 1px;
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0), var(--line), rgba(212, 175, 55, 0));
+  }
+  .sec-head h2 {
+    margin: 0; font-family: "Cinzel", Georgia, serif; font-weight: 700;
+    font-size: clamp(1.25rem, 4.5vw, 1.6rem); letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink); text-align: center;
+  }
+
+  /* ---------- claim card ---------- */
+  .claim-card {
+    position: relative;
+    max-width: 560px; margin: 64px auto 0;
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line); border-radius: 22px;
+    padding: 30px 26px 26px;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(246, 226, 122, .12);
+    animation: rise .8s .15s ease both;
+  }
+  .claim-card::before {
+    content: ""; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0), var(--gold-light), rgba(212, 175, 55, 0));
+  }
+  .claim-card h2 {
+    margin: 0 0 6px; text-align: center;
+    font-family: "Cinzel", Georgia, serif; font-weight: 700;
+    font-size: 1.45rem; letter-spacing: .08em; color: var(--ink);
+  }
+  .claim-sub { margin: 0 0 10px; text-align: center; font-size: 13.5px; color: var(--muted); }
+  .row {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+    padding: 12px 0; border-top: 1px dashed var(--line-soft);
+    font-size: 14px;
+  }
+  .row:first-of-type { margin-top: 8px; }
+  .row span { color: var(--muted); letter-spacing: .04em; }
+  .row b { font-weight: 600; color: var(--ink); text-align: right; word-break: break-all; }
+  button {
+    width: 100%; margin-top: 16px; padding: 15px;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 16px; font-weight: 600; letter-spacing: .02em;
+    border-radius: 12px; cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  #connectBtn {
+    background: rgba(212, 175, 55, .04); color: var(--gold-light);
+    border: 1.5px solid var(--gold);
+  }
+  #connectBtn:hover:not(:disabled) { background: rgba(212, 175, 55, .12); }
+  #connectBtn:disabled { border-color: #3a332a; color: var(--faint); cursor: default; }
+  #claimBtn {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold) 55%, #b8912c);
+    color: #1a1405; border: 0;
+    box-shadow: 0 10px 30px rgba(212, 175, 55, .30);
+  }
+  #claimBtn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 14px 36px rgba(212, 175, 55, .42); }
+  #claimBtn:disabled {
+    background: #35302a; color: #8a8172; cursor: not-allowed; box-shadow: none;
+  }
+  #status { margin-top: 14px; font-size: 13px; line-height: 1.55; color: var(--muted); min-height: 18px; word-break: break-all; }
+  .fac-note {
+    margin: 18px 0 0; text-align: center;
+    font-size: 13.5px; color: var(--muted); line-height: 1.6;
+  }
+  .fac-note b { color: var(--gold-light); }
+
+  /* ---------- cards grid ---------- */
+  .grid { display: grid; gap: 16px; }
+  .mini-card {
+    background: linear-gradient(180deg, rgba(212, 175, 55, .05), rgba(212, 175, 55, 0) 55%), var(--panel);
+    border: 1px solid var(--line-soft); border-radius: 18px;
+    padding: 24px 22px;
+  }
+  .mini-card h3 {
+    margin: 0 0 8px; font-size: 1.02rem; font-weight: 600; color: var(--ink);
+  }
+  .mini-card p { margin: 0; font-size: 14px; line-height: 1.65; color: var(--muted); }
+  .step-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Cinzel", Georgia, serif; font-weight: 700; font-size: 19px;
+    color: var(--gold-light);
+    border: 1px solid var(--gold);
+    background: radial-gradient(circle at 32% 28%, rgba(246, 226, 122, .20), rgba(212, 175, 55, .05) 65%);
+    margin-bottom: 16px;
+  }
+  .perk-mark {
+    font-family: "Cinzel", Georgia, serif; font-weight: 900; font-size: 1.7rem;
+    color: var(--gold); margin-bottom: 12px; line-height: 1;
+  }
+  .honest {
+    margin-top: 16px; padding: 16px 20px;
+    border-left: 3px solid var(--gold);
+    background: rgba(212, 175, 55, .05); border-radius: 0 12px 12px 0;
+    font-size: 13.5px; line-height: 1.65; color: var(--muted);
+  }
+  .honest b { color: var(--ink); }
+
+  /* ---------- pioneer wall ---------- */
+  .wall {
+    text-align: center;
+    border: 1px dashed rgba(212, 175, 55, .4); border-radius: 20px;
+    padding: 36px 24px;
+    background: radial-gradient(500px 200px at 50% 0%, rgba(212, 175, 55, .08), rgba(212, 175, 55, 0) 70%);
+  }
+  .wall .soon {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .3em;
+    color: #1a1405; background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    border-radius: 999px; padding: 6px 14px; margin-bottom: 16px;
+  }
+  .wall h3 {
+    margin: 0 0 10px; font-family: "Cinzel", Georgia, serif;
+    font-size: 1.35rem; font-weight: 700; letter-spacing: .06em;
+  }
+  .wall p { margin: 0 auto; max-width: 520px; font-size: 14.5px; line-height: 1.65; color: var(--muted); }
+
+  /* ---------- safety ---------- */
+  .safety {
+    background: var(--panel); border: 1px solid var(--line-soft);
+    border-radius: 18px; padding: 26px 24px;
+  }
+  .safety ul { list-style: none; margin: 0; padding: 0; }
+  .safety li {
+    position: relative; padding: 9px 0 9px 30px;
+    font-size: 14.5px; line-height: 1.6; color: var(--muted);
+  }
+  .safety li::before {
+    content: "✓"; position: absolute; left: 2px; top: 9px;
+    color: var(--gold); font-weight: 700;
+  }
+  .safety li b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- footer ---------- */
+  footer {
+    margin-top: 72px; padding-top: 28px;
+    border-top: 1px solid var(--line-soft);
+    text-align: center;
+  }
+  .contract { margin: 0 0 14px; font-size: 13px; line-height: 1.7; color: var(--muted); }
+  .contract .addr {
+    display: block; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px; color: var(--ink); word-break: break-all;
+  }
+  .contract a { text-decoration: none; border-bottom: 1px dotted var(--gold-deep); }
+  .contract a:hover { color: var(--gold-light); }
+  .verified { font-size: 12.5px; color: var(--faint); letter-spacing: .05em; }
+  .verified b { color: var(--gold); font-weight: 600; }
+  .foot-line { margin-top: 18px; font-size: 12px; color: var(--faint); }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- desktop ---------- */
+  @media (min-width: 720px) {
+    .grid.steps { grid-template-columns: repeat(3, 1fr); }
+    .grid.perks { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1024px) {
+    .hero {
+      display: grid; grid-template-columns: 400px 1fr;
+      align-items: center; column-gap: 56px;
+      text-align: left; padding-top: 72px;
+    }
+    .badge-wrap { margin-bottom: 0; }
+    .badge-ring { width: 380px; }
+    .tagline { margin: 0; }
+    .counter { margin-left: 0; margin-right: 0; }
+    .bar { margin-left: 0; margin-right: 0; }
+  }
 </style>
 </head>
 <body>
-<div class="card">
-  <h1>🏅 First Agents Club</h1>
-  <p class="sub">
-    The club's Pioneer Badge: a free keepsake badge for the early community of Binance Agent ID holders on BNB Chain.
-    If your wallet holds an Agent ID, you can claim one badge — one per wallet, free forever.
-    The badge is a collectible proof that you were here early; it carries no price, no yield,
-    and no promise of any return.
-  </p>
+<div class="wrap">
 
-  <div class="row"><span>Your wallet</span><b id="wallet">Not connected</b></div>
-  <div class="row"><span>Holds an Agent ID</span><b id="holds">—</b></div>
-  <div class="row"><span>Badge already claimed</span><b id="claimed">—</b></div>
-  <div class="row"><span>Total badges claimed</span><b id="total">—</b></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">F</div>
+      <div class="brand-name">FIRST <span>AGENTS</span> CLUB</div>
+    </div>
+    <div class="pill">BNB CHAIN</div>
+  </header>
 
-  <button id="connectBtn">Connect wallet</button>
-  <button id="claimBtn" disabled>Claim my badge</button>
-  <div id="status"></div>
+  <section class="hero">
+    <div class="badge-wrap">
+      <div class="badge-ring"><img src="metadata/badge.png" alt="First Agents Club — Pioneer Member badge"></div>
+    </div>
+    <div class="hero-text">
+      <p class="eyebrow">Est. 2026 · For Binance Agent ID Holders</p>
+      <h1>First Agents Club</h1>
+      <p class="tagline">
+        The pioneers of Binance Agent ID on BNB Chain. The first <b>1,000 Agent ID holders</b>
+        to claim write their names into the club's founding roll — one free Pioneer Badge per wallet,
+        numbered in claim order, kept forever.
+      </p>
+      <div class="counter">
+        <div class="count-main"><span id="heroClaimed">—</span><span class="count-of">/ 1,000</span></div>
+        <div class="count-label">Pioneer Badges Claimed</div>
+        <div class="bar"><div id="heroBar"></div></div>
+        <div class="count-sub"><b id="heroRemaining">—</b> badges remaining — when they are gone, they are gone.</div>
+      </div>
+    </div>
+  </section>
 
-  <p class="fine">
-    Connect with the wallet button in your own wallet app or browser extension — this page
-    never asks for a seed phrase, private key, pairing code, or QR login, and it never will.
-    Claiming is a normal on-chain transaction that you review and confirm in your own wallet;
-    you only pay the small BNB Chain network fee.
-  </p>
+  <div class="claim-card" id="claim">
+    <h2>Claim Your Badge</h2>
+    <p class="claim-sub">Free forever. One per wallet. You only pay the small BNB Chain network fee.</p>
+
+    <div class="row"><span>Your wallet</span><b id="wallet">Not connected</b></div>
+    <div class="row"><span>Holds an Agent ID</span><b id="holds">—</b></div>
+    <div class="row"><span>Badge already claimed</span><b id="claimed">—</b></div>
+    <div class="row"><span>Total badges claimed</span><b id="total">—</b></div>
+
+    <button id="connectBtn">Connect wallet</button>
+    <button id="claimBtn" disabled>Claim my badge</button>
+    <div id="status"></div>
+
+    <p class="fac-note">Every badge arrives with <b>+8,000 FAC</b> — the club token, delivered in the same transaction.</p>
+  </div>
+
+  <section>
+    <div class="sec-head"><h2>How to Claim</h2></div>
+    <div class="grid steps">
+      <div class="mini-card">
+        <div class="step-num">1</div>
+        <h3>Connect your wallet</h3>
+        <p>Open this page in your wallet app's browser or with a wallet extension, then tap “Connect wallet” above.</p>
+      </div>
+      <div class="mini-card">
+        <div class="step-num">2</div>
+        <h3>We check your Agent ID</h3>
+        <p>The page reads the Agent ID registry on-chain. If your wallet holds an Agent ID, you are eligible — nothing else is needed.</p>
+      </div>
+      <div class="mini-card">
+        <div class="step-num">3</div>
+        <h3>Confirm in your wallet</h3>
+        <p>Tap “Claim my badge” and confirm the transaction in your own wallet. Your numbered badge and 8,000 FAC arrive together.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>What Pioneers Get</h2></div>
+    <div class="grid perks">
+      <div class="mini-card">
+        <div class="perk-mark">№ 1–1,000</div>
+        <h3>The Pioneer Badge</h3>
+        <p>A numbered keepsake NFT, minted to your wallet in claim order. The badge is non-transferable — it can only ever be earned by claiming, never bought or traded.</p>
+      </div>
+      <div class="mini-card">
+        <div class="perk-mark">8,000 FAC</div>
+        <h3>The Club Token</h3>
+        <p>Every claim delivers 8,000 FAC, the First Agents Club token, alongside the badge — a permanent mark of founding membership.</p>
+      </div>
+    </div>
+    <div class="honest">
+      <b>Honestly:</b> FAC is a club keepsake and a symbol of membership. It carries no promised price,
+      no yield, and no promise of any return — anyone telling you otherwise is not speaking for the club.
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>The Pioneer Wall</h2></div>
+    <div class="wall">
+      <span class="soon">COMING SOON</span>
+      <h3>Your Name, Engraved in Order</h3>
+      <p>
+        Every claimer's Agent ID name joins the Pioneer Wall — the club's permanent founding roll,
+        listed in the order the badges were claimed. The wall is being built now.
+        Claim early, and your name stands at its front.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Stay Safe</h2></div>
+    <div class="safety">
+      <ul>
+        <li><b>We never ask</b> for your seed phrase, private key, pairing code, or a QR-code login — here or anywhere else. Ever.</li>
+        <li><b>You confirm everything yourself.</b> Claiming is a normal on-chain transaction that you review and approve in your own wallet.</li>
+        <li><b>Check the contract.</b> Only interact with the badge contract address published in the footer below — verify it before you transact.</li>
+        <li><b>This page is the only claim page.</b> If another page claims to be First Agents Club and asks for anything more, it is not us.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p class="contract">
+      Pioneer Badge contract (BNB Chain)
+      <span class="addr"><a href="https://bscscan.com/address/0x6f746cA8814C0fE95f75c0ac458Be48564eFe611" target="_blank" rel="noopener">0x6f746cA8814C0fE95f75c0ac458Be48564eFe611</a></span>
+    </p>
+    <p class="contract">
+      FAC token contract (BNB Chain)
+      <span class="addr"><a href="https://bscscan.com/token/0xC6FD1b96f5717c70a76ef34EBD6F1e0D54ECb379" target="_blank" rel="noopener">0xC6FD1b96f5717c70a76ef34EBD6F1e0D54ECb379</a></span>
+    </p>
+    <p class="verified">Contract source <b>verified on Sourcify</b> · Badge supply capped at 1,000 · One claim per wallet</p>
+    <p class="foot-line">First Agents Club — for the first generation of Binance Agent ID holders.</p>
+  </footer>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
@@ -129,6 +527,38 @@ $("claimBtn").onclick = async () => {
     status("Claim failed: " + (e.shortMessage || e.message));
   }
 };
+</script>
+
+<script>
+// ============================================================================
+// DISPLAY-ONLY hero counter. Reads totalClaimed() from a public BSC RPC and
+// updates the hero numbers. It never touches the wallet / claim logic above.
+// ============================================================================
+(function () {
+  var RPCS = ["https://bsc-dataseed.binance.org", "https://bsc-dataseed1.defibit.io"];
+  var MAX = 1000;
+  function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+  async function loadCounter() {
+    if (!window.ethers || typeof BADGE_CONTRACT_ADDRESS === "undefined") return;
+    for (var i = 0; i < RPCS.length; i++) {
+      try {
+        var rpcProvider = new ethers.JsonRpcProvider(RPCS[i]);
+        var badgeRead = new ethers.Contract(
+          BADGE_CONTRACT_ADDRESS,
+          ["function totalClaimed() view returns (uint256)"],
+          rpcProvider
+        );
+        var n = Number(await badgeRead.totalClaimed());
+        document.getElementById("heroClaimed").textContent = fmt(n);
+        document.getElementById("heroRemaining").textContent = fmt(Math.max(0, MAX - n));
+        document.getElementById("heroBar").style.width = Math.min(100, (n / MAX) * 100) + "%";
+        return;
+      } catch (e) { /* try the next RPC */ }
+    }
+  }
+  loadCounter();
+  setInterval(loadCounter, 60000);
+})();
 </script>
 </body>
 </html>
